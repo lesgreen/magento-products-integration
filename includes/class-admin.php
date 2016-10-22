@@ -55,10 +55,10 @@ class Admin {
 	 * @since 1.2.2
 	 */
 	public function flush_cache() {
-		plugin_instance()->get_cache()->force_update_cache();
+		\mag_products_integration()->get_cache()->force_update_cache();
 
 		wp_send_json( array(
-			'message' => __( 'The cache storage has been flushed.', plugin_instance()->textdomain )
+			'message' => __( 'The cache storage has been flushed.', \mag_products_integration()->textdomain )
 		) );
 		wp_die();
 	}
@@ -111,13 +111,13 @@ class Admin {
 				update_option( 'mag_products_integration_magento_module_installed', 1 );
 				$json_data = array(
 					'installed' => 1,
-					'message'   => __( 'Magento module installation successfully verified.', plugin_instance()->textdomain )
+					'message'   => __( 'Magento module installation successfully verified.', \mag_products_integration()->textdomain )
 				);
 			}
 		} else {
 			$json_data = array(
 				'installed' => 0,
-				'message'   => __( 'Unable to verify the Magento module installation. Make sure to <strong>Flush Magento Cache</strong>!', plugin_instance()->textdomain )
+				'message'   => __( 'Unable to verify the Magento module installation. Make sure to <strong>Flush Magento Cache</strong>!', \mag_products_integration()->textdomain )
 			);
 		}
 		wp_send_json( $json_data );
@@ -167,7 +167,7 @@ class Admin {
 
 	public function validate_cache_enabled( $cache_enabled ) {
 		if ( empty( $cache_enabled ) ) {
-			plugin_instance()->get_cache()->force_update_cache();
+			\mag_products_integration()->get_cache()->force_update_cache();
 		}
 
 		return $cache_enabled;
@@ -193,9 +193,9 @@ class Admin {
 			YEAR_IN_SECONDS
 		);
 
-		$current_lifetime = plugin_instance()->get_cache()->get_lifetime();
+		$current_lifetime = \mag_products_integration()->get_cache()->get_lifetime();
 		if ( $mag_products_integration_cache_lifetime != $current_lifetime ) {
-			plugin_instance()->get_cache()->update_expiration( time() + $mag_products_integration_cache_lifetime );
+			\mag_products_integration()->get_cache()->update_expiration( time() + $mag_products_integration_cache_lifetime );
 		}
 
 		if ( ! in_array( $mag_products_integration_cache_lifetime, $valid_values ) ) {
@@ -223,7 +223,7 @@ class Admin {
 			update_option( 'mag_products_integration_magento_module_installed', 0 );
 		}
 		if ( ! filter_var( $mag_products_integration_rest_api_url, FILTER_VALIDATE_URL ) ) {
-			add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', sprintf( __( 'The URL "%s" is invalid.', plugin_instance()->textdomain ), $mag_products_integration_rest_api_url ) );
+			add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', sprintf( __( 'The URL "%s" is invalid.', \mag_products_integration()->textdomain ), $mag_products_integration_rest_api_url ) );
 
 			return '';
 		}
@@ -235,7 +235,7 @@ class Admin {
 		) );
 
 		if ( $response instanceof \WP_Error ) {
-			add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', _n( 'The given URL is valid but something went wrong while the plugin was trying to connect to the API. Please verify the error below.', 'The given URL is valid but something went wrong while the plugin was trying to connect to the API. Please verify the errors below.', count( $response->errors ), plugin_instance()->textdomain ) );
+			add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', _n( 'The given URL is valid but something went wrong while the plugin was trying to connect to the API. Please verify the error below.', 'The given URL is valid but something went wrong while the plugin was trying to connect to the API. Please verify the errors below.', count( $response->errors ), \mag_products_integration()->textdomain ) );
 			foreach ( $response->get_error_messages() as $error ) {
 				add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', $error );
 			}
@@ -243,12 +243,12 @@ class Admin {
 			$decoded_array = json_decode( $response['body'], true );
 			if ( $decoded_array !== null ) {
 				$valid = true;
-				add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', __( 'The API URL has been successfully validated.', plugin_instance()->textdomain ), 'updated' );
+				add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', __( 'The API URL has been successfully validated.', \mag_products_integration()->textdomain ), 'updated' );
 			} else {
-				add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', __( 'The URL is not a valid API endpoint.', plugin_instance()->textdomain ) );
+				add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', __( 'The URL is not a valid API endpoint.', \mag_products_integration()->textdomain ) );
 			}
 		} else {
-			add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', __( 'The URL is not a valid API endpoint.', plugin_instance()->textdomain ) );
+			add_settings_error( 'mag_products_integration', 'mag_products_integration_rest_api_url', __( 'The URL is not a valid API endpoint.', \mag_products_integration()->textdomain ) );
 		}
 
 		update_option( 'mag_products_integration_rest_api_url_validated', intval( $valid ) );
@@ -264,13 +264,13 @@ class Admin {
 	public function page() {
 		?>
 		<div class="wrap">
-			<h2><?php _e( 'Magento Settings', plugin_instance()->textdomain ); ?></h2>
+			<h2><?php _e( 'Magento Settings', \mag_products_integration()->textdomain ); ?></h2>
 			<?php settings_errors(); ?>
 
-			<p><?php _e( 'You have to <strong>enable REST API</strong> first in your Magento store and <strong>give the product API Resources</strong> to your Guest role. Otherwise, it will be impossible to retreive your products.', plugin_instance()->textdomain ); ?>
+			<p><?php _e( 'You have to <strong>enable REST API</strong> first in your Magento store and <strong>give the product API Resources</strong> to your Guest role. Otherwise, it will be impossible to retreive your products.', \mag_products_integration()->textdomain ); ?>
 			</p>
 
-			<p style="color: #b50000; font-weight: bold;"><?php _e( 'Magento module is optional. If you are not using it, make sure to use the cache to reduce page load time.', plugin_instance()->textdomain ); ?></p>
+			<p style="color: #b50000; font-weight: bold;"><?php _e( 'Magento module is optional. If you are not using it, make sure to use the cache to reduce page load time.', \mag_products_integration()->textdomain ); ?></p>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'mag_products_integration' ); ?>
@@ -278,48 +278,48 @@ class Admin {
 
 				<table class="form-table">
 					<tr valign="top">
-						<th scope="row"><?php _e( 'Magento REST API URL', plugin_instance()->textdomain ); ?></th>
+						<th scope="row"><?php _e( 'Magento REST API URL', \mag_products_integration()->textdomain ); ?></th>
 						<td><input type="text" class="regular-text" name="mag_products_integration_rest_api_url"
 						           value="<?php echo esc_attr( get_option( 'mag_products_integration_rest_api_url' ) ); ?>"/>
 
-							<p class="description"><?php _e( 'Do not forget to <strong>put the trailing slash</strong>. Ex: http://yourmagentostore.com/api/rest/', plugin_instance()->textdomain ); ?></p>
+							<p class="description"><?php _e( 'Do not forget to <strong>put the trailing slash</strong>. Ex: http://yourmagentostore.com/api/rest/', \mag_products_integration()->textdomain ); ?></p>
 						</td>
 					</tr>
 
-					<?php if ( plugin_instance()->is_ready() && ! plugin_instance()->is_module_installed() ): ?>
+					<?php if ( \mag_products_integration()->is_ready() && ! \mag_products_integration()->is_module_installed() ): ?>
 						<tr valign="top">
 							<th scope="row"></th>
 							<td>
 								<a href="#"
-								   id="verify-magento-module"><?php _e( 'Verify Magento module installation and get available stores', plugin_instance()->textdomain ); ?>
+								   id="verify-magento-module"><?php _e( 'Verify Magento module installation and get available stores', \mag_products_integration()->textdomain ); ?>
 									&#8594;</a></td>
 						</tr>
-					<?php elseif ( plugin_instance()->is_ready() && plugin_instance()->is_module_installed() ): ?>
+					<?php elseif ( \mag_products_integration()->is_ready() && \mag_products_integration()->is_module_installed() ): ?>
 						<tr valign="top">
-							<th scope="row"><?php _e( 'Magento module installed', plugin_instance()->textdomain ); ?></th>
-							<td><?php _e( 'Yes', plugin_instance()->textdomain ); ?></td>
+							<th scope="row"><?php _e( 'Magento module installed', \mag_products_integration()->textdomain ); ?></th>
+							<td><?php _e( 'Yes', \mag_products_integration()->textdomain ); ?></td>
 						</tr>
 						<tr valign="top">
-							<th scope="row"><?php _e( 'Available stores code', plugin_instance()->textdomain ); ?></th>
+							<th scope="row"><?php _e( 'Available stores code', \mag_products_integration()->textdomain ); ?></th>
 							<td><?php echo esc_html( implode( ', ', unserialize( get_option( 'mag_products_integration_stores_code', array() ) ) ) ); ?></td>
 						</tr>
 						<tr valign="top">
-							<th scope="row"><?php _e( 'Default store code', plugin_instance()->textdomain ); ?></th>
+							<th scope="row"><?php _e( 'Default store code', \mag_products_integration()->textdomain ); ?></th>
 							<td><?php echo esc_html( get_option( 'mag_products_integration_default_store_code', '' ) ); ?></td>
 						</tr>
 					<?php endif; ?>
 
 					<tr valign="top">
-						<th scope="now"><?php _e( 'Enable cache', plugin_instance()->textdomain ); ?></th>
+						<th scope="now"><?php _e( 'Enable cache', \mag_products_integration()->textdomain ); ?></th>
 						<td>
 							<input type="checkbox"
-							       name="mag_products_integration_cache_enabled"<?php echo plugin_instance()->get_cache()->is_enabled() ? ' checked' : ''; ?> />
+							       name="mag_products_integration_cache_enabled"<?php echo \mag_products_integration()->get_cache()->is_enabled() ? ' checked' : ''; ?> />
 						</td>
 					</tr>
 
-					<?php if ( plugin_instance()->get_cache()->is_enabled() ): ?>
+					<?php if ( \mag_products_integration()->get_cache()->is_enabled() ): ?>
 						<tr valign="top">
-							<th scope="now"><?php _e( 'Cache lifetime', plugin_instance()->textdomain ); ?></th>
+							<th scope="now"><?php _e( 'Cache lifetime', \mag_products_integration()->textdomain ); ?></th>
 							<td>
 								<?php $this->display_cache_lifetime_html( get_option( 'mag_products_integration_cache_lifetime', Cache::DEFAULT_CACHE_LIFETIME ) ); ?>
 							</td>
@@ -327,28 +327,28 @@ class Admin {
 					<?php endif; ?>
 
 					<tr valign="top">
-						<th scope="row"><?php _e( 'Use jQuery script', plugin_instance()->textdomain ); ?></th>
+						<th scope="row"><?php _e( 'Use jQuery script', \mag_products_integration()->textdomain ); ?></th>
 						<td><input type="checkbox"<?php echo $this->use_jquery_script() ? ' checked' : ''; ?>
 						           name="mag_products_integration_jquery_script"
 						           value="<?php echo esc_attr( get_option( 'mag_products_integration_rest_api_url' ) ); ?>"/>
 
 							<span
-								class="description"><?php _e( 'Automatically adjust height of all products block.', plugin_instance()->textdomain ); ?></span>
+								class="description"><?php _e( 'Automatically adjust height of all products block.', \mag_products_integration()->textdomain ); ?></span>
 						</td>
 					</tr>
 				</table>
 
-				<?php if ( ! plugin_instance()->get_cache()->is_enabled() ): ?>
+				<?php if ( ! \mag_products_integration()->get_cache()->is_enabled() ): ?>
 					<input type="hidden" name="mag_products_integration_cache_lifetime"
-					       value="<?php echo plugin_instance()->get_cache()->get_lifetime(); ?>"/>
+					       value="<?php echo \mag_products_integration()->get_cache()->get_lifetime(); ?>"/>
 				<?php endif; ?>
 
 				<p class="submit">
 					<?php submit_button( null, 'primary', 'submit', false ); ?>
-					<?php submit_button( __( 'Flush cache', plugin_instance()->textdomain ), 'secondary', 'flush-cache', false ); ?>
+					<?php submit_button( __( 'Flush cache', \mag_products_integration()->textdomain ), 'secondary', 'flush-cache', false ); ?>
 				</p>
 			</form>
-			<p><?php _e( 'For developers: <a target="_blank" href="http://magentowp.santerref.com/documentation.html"><strong>actions</strong> and <strong>filters</strong> documentation</a>.', plugin_instance()->textdomain ); ?></p>
+			<p><?php _e( 'For developers: <a target="_blank" href="http://magentowp.santerref.com/documentation.html"><strong>actions</strong> and <strong>filters</strong> documentation</a>.', \mag_products_integration()->textdomain ); ?></p>
 		</div>
 		<?php
 	}
@@ -366,13 +366,13 @@ class Admin {
 			$default_lifetime = YEAR_IN_SECONDS;
 		}
 		$options = array(
-			array( 'lifetime' => HOUR_IN_SECONDS, 'label' => __( '1 hour', plugin_instance()->textdomain ) ),
-			array( 'lifetime' => 6 * HOUR_IN_SECONDS, 'label' => __( '6 hours', plugin_instance()->textdomain ) ),
-			array( 'lifetime' => 12 * HOUR_IN_SECONDS, 'label' => __( '12 hours', plugin_instance()->textdomain ) ),
-			array( 'lifetime' => DAY_IN_SECONDS, 'label' => __( '1 day', plugin_instance()->textdomain ) ),
-			array( 'lifetime' => 3 * DAY_IN_SECONDS, 'label' => __( '3 days', plugin_instance()->textdomain ) ),
-			array( 'lifetime' => WEEK_IN_SECONDS, 'label' => __( '1 week', plugin_instance()->textdomain ) ),
-			array( 'lifetime' => YEAR_IN_SECONDS, 'label' => __( '1 year', plugin_instance()->textdomain ) )
+			array( 'lifetime' => HOUR_IN_SECONDS, 'label' => __( '1 hour', \mag_products_integration()->textdomain ) ),
+			array( 'lifetime' => 6 * HOUR_IN_SECONDS, 'label' => __( '6 hours', \mag_products_integration()->textdomain ) ),
+			array( 'lifetime' => 12 * HOUR_IN_SECONDS, 'label' => __( '12 hours', \mag_products_integration()->textdomain ) ),
+			array( 'lifetime' => DAY_IN_SECONDS, 'label' => __( '1 day', \mag_products_integration()->textdomain ) ),
+			array( 'lifetime' => 3 * DAY_IN_SECONDS, 'label' => __( '3 days', \mag_products_integration()->textdomain ) ),
+			array( 'lifetime' => WEEK_IN_SECONDS, 'label' => __( '1 week', \mag_products_integration()->textdomain ) ),
+			array( 'lifetime' => YEAR_IN_SECONDS, 'label' => __( '1 year', \mag_products_integration()->textdomain ) )
 		);
 
 		$html = '<select name="mag_products_integration_cache_lifetime">';
@@ -407,7 +407,7 @@ class Admin {
 	public function notify_plugin_not_ready() {
 		?>
 		<div class="error notice is-dismissible">
-			<p><?php echo sprintf( __( 'Please <a href="%s">configure Magento plugin</a> before using the shortcode.', plugin_instance()->textdomain ), admin_url( 'admin.php?page=mag-products-integration%2Fclass.mag-products-integration-admin.php' ) ); ?></p>
+			<p><?php echo sprintf( __( 'Please <a href="%s">configure Magento plugin</a> before using the shortcode.', \mag_products_integration()->textdomain ), admin_url( 'admin.php?page=mag-products-integration%2Fclass.mag-products-integration-admin.php' ) ); ?></p>
 		</div>
 		<?php
 	}
@@ -420,7 +420,7 @@ class Admin {
 	public function notify_magento_module_not_verified() {
 		?>
 		<div class="error notice is-dismissible">
-			<p><?php _e( 'Please verify Magento module installation and load available stores. <a id="dismiss-module-notice" href="#">Dismiss this notice, I am not going to use the Magento module.</a>', plugin_instance()->textdomain ); ?></p>
+			<p><?php _e( 'Please verify Magento module installation and load available stores. <a id="dismiss-module-notice" href="#">Dismiss this notice, I am not going to use the Magento module.</a>', \mag_products_integration()->textdomain ); ?></p>
 		</div>
 		<?php
 	}
@@ -431,9 +431,9 @@ class Admin {
 	 * @since 1.0.0
 	 */
 	public function verify_settings() {
-		if ( ! plugin_instance()->is_ready() ) {
+		if ( ! \mag_products_integration()->is_ready() ) {
 			add_action( 'admin_notices', array( $this, 'notify_plugin_not_ready' ) );
-		} elseif ( ! plugin_instance()->is_module_installed() ) {
+		} elseif ( ! \mag_products_integration()->is_module_installed() ) {
 			$dismiss_module_notice = get_option( 'mag_products_integration_dismiss_module_notice', false );
 			if ( ! $dismiss_module_notice ) {
 				add_action( 'admin_notices', array( $this, 'notify_magento_module_not_verified' ) );
@@ -448,11 +448,11 @@ class Admin {
 	 */
 	public function admin_menu() {
 		add_menu_page(
-			__( 'Magento', plugin_instance()->textdomain ),
-			__( 'Magento', plugin_instance()->textdomain ),
+			__( 'Magento', \mag_products_integration()->textdomain ),
+			__( 'Magento', \mag_products_integration()->textdomain ),
 			'manage_options',
 			__FILE__,
-			array( plugin_instance()->get_admin(), 'page' ),
+			array( \mag_products_integration()->get_admin(), 'page' ),
 			plugins_url( 'assets/images/icon-16x16.png', dirname( __FILE__ ) )
 		);
 	}

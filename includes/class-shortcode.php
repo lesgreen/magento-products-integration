@@ -24,7 +24,7 @@ class Shortcode {
 	public function do_shortcode( $atts, $content = "" ) {
 		$html = '';
 
-		if ( plugin_instance()->is_ready() ) {
+		if ( \mag_products_integration()->is_ready() ) {
 			$atts = shortcode_atts( array(
 				'limit'        => '12',
 				'title'        => 'h2',
@@ -48,11 +48,11 @@ class Shortcode {
 			$magento_parameters = new Magento_Parameters( $atts );
 			$shortcode_id       = sha1( $magento_parameters->to_string() );
 
-			$products = plugin_instance()->get_cache()->get_cached_products( $shortcode_id );
+			$products = \mag_products_integration()->get_cache()->get_cached_products( $shortcode_id );
 			if ( $products === false ) {
-				$products = plugin_instance()->get_magento()->get_products( $magento_parameters );
-				if ( plugin_instance()->get_cache()->is_enabled() ) {
-					plugin_instance()->get_cache()->set_cached_products( $products, $shortcode_id );
+				$products = \mag_products_integration()->get_magento()->get_products( $magento_parameters );
+				if ( \mag_products_integration()->get_cache()->is_enabled() ) {
+					\mag_products_integration()->get_cache()->set_cached_products( $products, $shortcode_id );
 				}
 			}
 
@@ -133,9 +133,9 @@ class Shortcode {
 					do_action( 'mag_products_integration_before_add_to_cart_button', $product );
 					echo '<div class="url">';
 					if ( $product->is_in_stock && $product->type_id == 'simple' ) {
-						echo apply_filters( 'mag_products_integration_product_buy_it_now_button', '<a class="buy-it-now" href="' . esc_html( $product->buy_now_url ) . '">' . __( 'Buy it now', plugin_instance()->textdomain ) . '</a>', $product->buy_now_url );
+						echo apply_filters( 'mag_products_integration_product_buy_it_now_button', '<a class="buy-it-now" href="' . esc_html( $product->buy_now_url ) . '">' . __( 'Buy it now', \mag_products_integration()->textdomain ) . '</a>', $product->buy_now_url );
 					} else {
-						echo apply_filters( 'mag_products_integration_product_view_details_button', '<a class="view-details" href="' . esc_html( $product->url ) . '">' . __( 'View details', plugin_instance()->textdomain ) . '</a>', $product->url );
+						echo apply_filters( 'mag_products_integration_product_view_details_button', '<a class="view-details" href="' . esc_html( $product->url ) . '">' . __( 'View details', \mag_products_integration()->textdomain ) . '</a>', $product->url );
 					}
 					echo '</div>';
 					do_action( 'mag_products_integration_after_add_to_cart_button', $product );
@@ -143,7 +143,7 @@ class Shortcode {
 				}
 				echo '</ul></div>';
 				do_action( 'mag_products_integration_after_products' );
-				if ( plugin_instance()->get_admin()->use_jquery_script() ) {
+				if ( \mag_products_integration()->get_admin()->use_jquery_script() ) {
 					echo '<script type="text/javascript">var max = -1; jQuery(".magento-wrapper ul > li").each(function() { var h = jQuery(this).height(); max = h > max ? h : max; }); jQuery(".magento-wrapper ul > li").css({height: max+"px"});</script>';
 				}
 			}
