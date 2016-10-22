@@ -132,9 +132,9 @@ class Admin {
 	 * @param string $hook Hook executed which allow us to target a specific admin page.
 	 */
 	public function load_ajax_script( $hook ) {
-		wp_enqueue_script( 'ajax-notice', plugins_url( '/assets/js/notice.js', dirname( __FILE__ ) ), array( 'jquery' ) );
+		wp_enqueue_script( 'ajax-notice', plugins_url( '/assets/js/notice.min.js', dirname( __FILE__ ) ), array( 'jquery' ) );
 		if ( preg_match( '/^toplevel_page_mag-products-integration/i', $hook ) ) {
-			wp_enqueue_script( 'ajax-script', plugins_url( '/assets/js/script.js', dirname( __FILE__ ) ), array( 'jquery' ) );
+			wp_enqueue_script( 'ajax-script', plugins_url( '/assets/js/script.min.js', dirname( __FILE__ ) ), array( 'jquery' ) );
 		}
 		wp_localize_script( 'ajax-notice', 'ajax_object', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' )

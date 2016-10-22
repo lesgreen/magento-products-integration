@@ -61,7 +61,6 @@ abstract class Plugin {
 	protected function init() {
 		load_plugin_textdomain( $this->textdomain, false, basename( dirname( __FILE__ ) ) . '/languages' );
 		add_shortcode( 'magento', array( $this->shortcode, 'do_shortcode' ) );
-		// add_action( 'init', array( $this, 'init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'euqueue_scripts' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'add_action_links' ) );
 	}
@@ -72,7 +71,7 @@ abstract class Plugin {
 	 * @since 1.0.0
 	 */
 	public function euqueue_scripts() {
-		wp_enqueue_style( 'magento-style', plugins_url( 'assets/css/style.css', __FILE__ ), array(), $this->version );
+		wp_enqueue_style( 'magento-style', plugins_url( 'assets/css/style.min.css', __FILE__ ), array(), $this->version );
 	}
 
 	/**
@@ -200,8 +199,8 @@ final class Plugin_Singleton extends Plugin {
 
 }
 
-//register_activation_hook( __FILE__, array( '\mag_products_integration\plugin_instance', 'activate' ) );
-//register_deactivation_hook( __FILE__, array( '\mag_products_integration\plugin_instance', 'deactivate' ) );
+register_activation_hook( __FILE__, array( '\mag_products_integration\plugin_instance', 'activate' ) );
+register_deactivation_hook( __FILE__, array( '\mag_products_integration\plugin_instance', 'deactivate' ) );
 
 /**
  * Create global instance of the plugin. Allows developer to remove/add plugin actions/filters.
@@ -220,7 +219,7 @@ function plugin_instance() {
 	return $plugin_instance;
 }
 
-//plugin_instance();
+plugin_instance();
 
 if ( is_admin() ) {
 	/**
