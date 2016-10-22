@@ -2,8 +2,8 @@
 Contributors: santerref
 Tags: magento, product, listing, wordpress, rest, api, e-commerce, webshop, shortcode, integration, post, posts, admin, page, commerce, products, free
 Requires at least: 4.0
-Tested up to: 4.5
-Stable tag: 1.2.4
+Tested up to: 4.6
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,9 +34,9 @@ For developers: [actions and filters documentation](http://magentowp.santerref.c
 
 = Coming soon =
 
-* OAuth authentication (1.3.0)
-* Possibility to set custom thumbnail for products without images (1.3.0)
-* Magento 2 compatibility (2.0.0)
+* OAuth authentication
+* Possibility to set custom thumbnail for products without images
+* Magento 2 compatibility
 
 == Installation ==
 
@@ -53,6 +53,14 @@ For developers: [actions and filters documentation](http://magentowp.santerref.c
 3. Page shortcode example
 
 == Changelog ==
+
+= 1.2.5 =
+* NEW Possibility to set custom thumbnail for products without images
+* Update plugin files name and structure to respect WordPress's coding standards
+* Prepare plugin for Magento 2
+* Test plugin with WordPress 4.6
+* Developer: Add PSR-4 compliant autoloader and remove all require calls
+* Developer: Add namespace mag_products_integration. You have to replace mag_products_integration() with \mag_products_integration\plugin_instance() and mag_products_integration_admin() with \mag_products_integration\admin_instance().
 
 = 1.2.4 =
 * Fix Magento module requests when Magento is in a subdirectory.
